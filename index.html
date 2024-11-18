@@ -87,6 +87,12 @@
 </div>
 <button id="closeButton">Закрыть</button>
 
+<!-- Аудио -->
+<audio id="spinAudio" preload="auto">
+    <source src="prokrut.mp3" type="audio/mpeg">
+    Ваш браузер не поддерживает воспроизведение аудио.
+</audio>
+
 <script>
     const tg = window.Telegram.WebApp;
 
@@ -108,6 +114,7 @@
     const spinButton = document.getElementById('spinButton');
     const resultDiv = document.getElementById('result');
     const closeButton = document.getElementById('closeButton');
+    const spinAudio = document.getElementById('spinAudio');
 
     closeButton.addEventListener('click', () => {
         tg.close();
@@ -144,25 +151,26 @@
             spinButton.disabled = true;
             moveSpeed = constantSpeed;
             totalTime = 0;
+            spinAudio.currentTime = 0; // Сбрасываем проигрывание
+            spinAudio.play(); // Запуск аудио
             animate();
         }
     }
 
     function animate() {
-        totalTime += 16; // Приблизительно 60 кадров в секунду (1000 / 60 ≈ 16)
-        
+        totalTime += 16;
+
         if (totalTime < 5000) {
-            // Первые 5 секунд с постоянной скоростью
             moveItems();
         } else if (totalTime < 10000) {
-            // Последние 5 секунд замедление
             moveItems();
-            moveSpeed *= 0.98; // Плавное замедление
+            moveSpeed *= 0.98;
         } else {
             running = false;
             spinButton.disabled = false;
             cancelAnimationFrame(animationId);
             getSelectedFigure();
+            spinAudio.pause(); // Останавливаем аудио
             return;
         }
 
